@@ -1,5 +1,5 @@
 import { parseAbiItem, type Address } from "viem";
-import { getBasePublicClient, cachedRequest, verifyBaseChainId } from "./baseRpc";
+import { getBasePublicClient, cachedRequest, verifyBaseChainId, withRetry } from "./baseRpc";
 
 export type ScoreTier = "Bronze" | "Silver" | "Gold" | "Platinum";
 
@@ -28,7 +28,7 @@ export type OnchainScoreOptions = {
   lookbackBlocks?: bigint;
 };
 
-const DEFAULT_LOOKBACK_BLOCKS = BigInt(50_000);
+const DEFAULT_LOOKBACK_BLOCKS = BigInt(12_000);
 const DEFAULT_TTL_MS = 60_000;
 
 type ScoreClient = {
@@ -109,18 +109,28 @@ async function getContractInteractionScore(
     "event Transfer(address indexed from, address indexed to, uint256 value)",
   );
 
-  const logs = await cachedRequest(
-    "getLogs:erc20TransferFrom",
-    [address, fromBlock, latest],
-    async () =>
-      client.getLogs({
-        event: transferEvent,
-        args: { from: address },
-        fromBlock,
-        toBlock: latest,
-      }),
-    ttlMs,
-  );
+  let logs: unknown[] = [];
+  try {
+    logs = await cachedRequest(
+      "getLogs:erc20TransferFrom",
+      [address, fromBlock, latest],
+      async () =>
+        withRetry(
+          () =>
+            client.getLogs({
+              event: transferEvent,
+              args: { from: address },
+              fromBlock,
+              toBlock: latest,
+            }),
+          { retries: 2, baseDelayMs: 350 },
+        ),
+      ttlMs,
+    );
+  } catch {
+    notes.push("RPC log scan temporarily unavailable; interaction score computed as 0.");
+    notes.push("Tip: set NEXT_PUBLIC_BASE_RPC_URL for higher reliability.");
+  }
 
   const interactions = logs.length;
   const score = clamp(Math.sqrt(interactions) * 18, 0, 160);

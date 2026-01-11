@@ -20,6 +20,24 @@ function getCacheKey(method: string, params: unknown[]): string {
   return `${method}:${JSON.stringify(params)}`;
 }
 
+export async function withRetry<T>(
+  fn: () => Promise<T>,
+  options: { retries: number; baseDelayMs: number } = { retries: 2, baseDelayMs: 300 },
+): Promise<T> {
+  let lastErr: unknown;
+  for (let attempt = 0; attempt <= options.retries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      if (attempt >= options.retries) break;
+      const delay = options.baseDelayMs * Math.pow(2, attempt);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  throw lastErr;
+}
+
 function cacheGet<T>(key: string): T | undefined {
   const entry = memoryCache.get(key);
   if (!entry) return undefined;
@@ -38,6 +56,10 @@ const rpcUrls = [
   process.env.NEXT_PUBLIC_BASE_RPC_URL,
   process.env.NEXT_PUBLIC_BASE_RPC_URL_FALLBACK,
   "https://mainnet.base.org",
+  "https://base.llamarpc.com",
+  "https://base.publicnode.com",
+  "https://1rpc.io/base",
+  "https://rpc.ankr.com/base",
 ].filter(Boolean) as string[];
 
 function createTransport() {
