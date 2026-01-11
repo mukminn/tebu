@@ -1,0 +1,351 @@
+.container {
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 1.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.links {
+  display: flex;
+  gap: 10px;
+}
+
+.link {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.card {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(0, 82, 255, 0.18), rgba(0, 0, 0, 0.2));
+  padding: 14px;
+}
+
+.inputRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  outline: none;
+}
+
+.input:focus {
+  border-color: rgba(0, 82, 255, 0.55);
+  box-shadow: 0 0 0 4px rgba(0, 82, 255, 0.15);
+}
+
+.button {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: white;
+  background: linear-gradient(135deg, rgba(0, 82, 255, 0.9), rgba(0, 168, 255, 0.6));
+  cursor: pointer;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.button:not(:disabled):hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.notice {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.error {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #ff6b6b;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+@media (max-width: 920px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.scoreCard,
+.chartCard {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 14px;
+}
+
+.scoreHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.scoreName {
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  opacity: 0.95;
+}
+
+.scoreMeta {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tierBadge {
+  font-size: 0.75rem;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 82, 255, 0.35);
+  background: rgba(0, 82, 255, 0.12);
+}
+
+.chainTag {
+  font-size: 0.75rem;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  opacity: 0.9;
+}
+
+.scoreRingWrap {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+}
+
+.ring {
+  transform: rotate(-90deg);
+}
+
+.ringTrack {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+}
+
+.ringValue {
+  fill: none;
+  stroke: rgba(0, 82, 255, 0.95);
+  stroke-linecap: round;
+}
+
+.scoreValue {
+  position: absolute;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.scoreMax {
+  position: absolute;
+  margin-top: 28px;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.breakdown {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 540px) {
+  .breakdown {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.metric {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 10px;
+}
+
+.metricLabel {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.metricValue {
+  margin-top: 6px;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.actions {
+  margin-top: 12px;
+}
+
+.secondaryButton {
+  display: inline-block;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.secondaryButton:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.notes {
+  margin-top: 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.note {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.chartHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.chartTitle {
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.chartSub {
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+.radarWrap {
+  display: grid;
+  gap: 12px;
+}
+
+.radar {
+  width: 100%;
+  height: auto;
+}
+
+.radarGrid {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+}
+
+.radarAxis {
+  stroke: rgba(255, 255, 255, 0.06);
+}
+
+.radarPoly {
+  fill: rgba(0, 82, 255, 0.18);
+  stroke: rgba(0, 82, 255, 0.9);
+  stroke-width: 2;
+}
+
+.radarLabels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.radarLabel {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 10px;
+}
+
+.radarLabelTitle {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.radarLabelValue {
+  margin-top: 6px;
+  font-size: 1.05rem;
+}
+
+.skeletonCard {
+  margin-top: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.skeletonLine,
+.skeletonLineShort {
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+  background-size: 200% 100%;
+  animation: shimmer 1.1s infinite linear;
+}
+
+.skeletonLineShort {
+  width: 60%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
