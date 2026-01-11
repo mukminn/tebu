@@ -5,8 +5,6 @@ import {
   http,
   type Address,
   type Hex,
-  type PublicClient,
-  type Transport,
 } from "viem";
 
 type CacheEntry<T> = {
@@ -42,14 +40,14 @@ const rpcUrls = [
   "https://mainnet.base.org",
 ].filter(Boolean) as string[];
 
-function createTransport(): Transport {
+function createTransport() {
   const transports = rpcUrls.map((url) => http(url));
   return transports.length > 1 ? fallback(transports) : transports[0] ?? http("https://mainnet.base.org");
 }
 
-let _client: PublicClient | undefined;
+let _client: unknown | undefined;
 
-export function getBasePublicClient(): PublicClient {
+export function getBasePublicClient(): unknown {
   if (_client) return _client;
   _client = createPublicClient({
     chain: base,
@@ -72,11 +70,16 @@ export async function cachedRequest<T>(
   return value;
 }
 
-export async function verifyBaseChainId(client: PublicClient = getBasePublicClient()): Promise<boolean> {
+type ChainIdReader = {
+  getChainId: () => Promise<number>;
+};
+
+export async function verifyBaseChainId(client: unknown = getBasePublicClient()): Promise<boolean> {
+  const reader = client as ChainIdReader;
   const chainId = await cachedRequest(
     "eth_chainId",
     [],
-    async () => client.getChainId(),
+    async () => reader.getChainId(),
     60_000,
   );
   return chainId === base.id;

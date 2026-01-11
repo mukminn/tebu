@@ -1,4 +1,4 @@
-import { parseAbiItem, type Address, type PublicClient } from "viem";
+import { parseAbiItem, type Address } from "viem";
 import { getBasePublicClient, cachedRequest, verifyBaseChainId } from "./baseRpc";
 
 export type ScoreTier = "Bronze" | "Silver" | "Gold" | "Platinum";
@@ -31,6 +31,18 @@ export type OnchainScoreOptions = {
 const DEFAULT_LOOKBACK_BLOCKS = BigInt(50_000);
 const DEFAULT_TTL_MS = 60_000;
 
+type ScoreClient = {
+  getChainId: () => Promise<number>;
+  getBlockNumber: () => Promise<bigint>;
+  getTransactionCount: (args: { address: Address; blockTag: "latest" }) => Promise<number>;
+  getLogs: (args: {
+    event: ReturnType<typeof parseAbiItem>;
+    args: { from: Address };
+    fromBlock: bigint;
+    toBlock: bigint;
+  }) => Promise<unknown[]>;
+};
+
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
@@ -46,7 +58,7 @@ function sumBreakdown(b: ScoreBreakdown): number {
   return b.walletAge + b.txCount + b.gasUsage + b.contractInteractions + b.defiNftUsage - b.penalties;
 }
 
-async function getWalletAgeDays(client: PublicClient, address: Address, ttlMs: number): Promise<number | null> {
+async function getWalletAgeDays(client: ScoreClient, address: Address, ttlMs: number): Promise<number | null> {
   const latest = await cachedRequest("getBlockNumber", [], () => client.getBlockNumber(), ttlMs);
 
   // Heuristic: binary search earliest tx is expensive without an indexer.
@@ -66,7 +78,11 @@ async function getWalletAgeDays(client: PublicClient, address: Address, ttlMs: n
   return 7;
 }
 
-async function getTxCountScore(client: PublicClient, address: Address, ttlMs: number): Promise<{ txCount: number; score: number }> {
+async function getTxCountScore(
+  client: ScoreClient,
+  address: Address,
+  ttlMs: number,
+): Promise<{ txCount: number; score: number }> {
   const txCount = await cachedRequest(
     "getTransactionCount",
     [address, "latest"],
@@ -78,7 +94,7 @@ async function getTxCountScore(client: PublicClient, address: Address, ttlMs: nu
 }
 
 async function getContractInteractionScore(
-  client: PublicClient,
+  client: ScoreClient,
   address: Address,
   lookbackBlocks: bigint,
   ttlMs: number,
@@ -141,9 +157,9 @@ function penalties(txCount: number, contractInteractions: number): { penalty: nu
 }
 
 export class OnchainScoreService {
-  private client: PublicClient;
+  private client: ScoreClient;
 
-  constructor(client: PublicClient = getBasePublicClient()) {
+  constructor(client: ScoreClient = getBasePublicClient() as ScoreClient) {
     this.client = client;
   }
 

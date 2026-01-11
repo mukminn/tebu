@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { isAddress, type Address } from "viem";
 import { OnchainScoreService, type OnchainScoreResult } from "@/lib/onchainScoreService";
@@ -68,12 +69,12 @@ export default function LeaderboardPage() {
           <p className={styles.subtitle}>Paste wallet addresses (comma/space separated). Read-only Base scoring.</p>
         </div>
         <div className={styles.links}>
-          <a className={styles.link} href="/dashboard">
+          <Link className={styles.link} href="/dashboard">
             Dashboard
-          </a>
-          <a className={styles.link} href="/">
+          </Link>
+          <Link className={styles.link} href="/">
             Home
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -121,14 +122,14 @@ export default function LeaderboardPage() {
 
         {sorted.length ? (
           sorted.map((r, i) => (
-            <a key={r.address} className={styles.tr} href={`/wallet/${r.address}`}>
+            <Link key={r.address} className={styles.tr} href={`/wallet/${r.address}`}>
               <div className={styles.td}>{i + 1}</div>
               <div className={styles.tdMono}>{shortAddress(r.address)}</div>
               <div className={styles.td}>
                 <span className={styles.tier}>{r.tier}</span>
               </div>
               <div className={styles.tdRight}>{r.score}</div>
-            </a>
+            </Link>
           ))
         ) : (
           <div className={styles.empty}>No data yet.</div>

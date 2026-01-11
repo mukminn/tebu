@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { isAddress, type Address } from "viem";
 import { OnchainScoreService, type OnchainScoreResult } from "@/lib/onchainScoreService";
@@ -144,8 +145,12 @@ export default function DashboardPage() {
           <p className={styles.subtitle}>Base Mainnet · Read-only · No signing</p>
         </div>
         <div className={styles.links}>
-          <a className={styles.link} href="/">Home</a>
-          <a className={styles.link} href="/leaderboard">Leaderboard</a>
+          <Link className={styles.link} href="/">
+            Home
+          </Link>
+          <Link className={styles.link} href="/leaderboard">
+            Leaderboard
+          </Link>
         </div>
       </div>
 
@@ -216,9 +221,9 @@ export default function DashboardPage() {
             </div>
 
             <div className={styles.actions}>
-              <a className={styles.secondaryButton} href={`/wallet/${result.address}`}>
+              <Link className={styles.secondaryButton} href={`/wallet/${result.address}`}>
                 View Wallet Profile
-              </a>
+              </Link>
             </div>
 
             {result.notes.length ? (
