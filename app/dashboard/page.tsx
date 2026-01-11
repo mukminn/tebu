@@ -3,8 +3,14 @@
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { isAddress, type Address } from "viem";
-import { OnchainScoreService, type OnchainScoreResult } from "@/lib/onchainScoreService";
+import type { OnchainScoreResult } from "@/lib/onchainScoreService";
 import styles from "./page.module.css";
+
+async function fetchScore(address: Address): Promise<OnchainScoreResult> {
+  const res = await fetch(`/api/score?address=${address}`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Score request failed (${res.status})`);
+  return (await res.json()) as OnchainScoreResult;
+}
 
 function shortAddress(address: string) {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
@@ -127,8 +133,7 @@ export default function DashboardPage() {
     setError("");
     startTransition(async () => {
       try {
-        const svc = new OnchainScoreService();
-        const score = await svc.compute(address);
+        const score = await fetchScore(address);
         setResult(score);
       } catch (e) {
         setResult(null);

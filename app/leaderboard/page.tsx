@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { isAddress, type Address } from "viem";
-import { OnchainScoreService, type OnchainScoreResult } from "@/lib/onchainScoreService";
+import type { OnchainScoreResult } from "@/lib/onchainScoreService";
 import styles from "./page.module.css";
 
 type Row = {
@@ -14,6 +14,12 @@ type Row = {
 
 function shortAddress(address: string) {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
+}
+
+async function fetchScore(address: Address): Promise<OnchainScoreResult> {
+  const res = await fetch(`/api/score?address=${address}`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Score request failed (${res.status})`);
+  return (await res.json()) as OnchainScoreResult;
 }
 
 export default function LeaderboardPage() {
@@ -45,8 +51,7 @@ export default function LeaderboardPage() {
     setError("");
     setIsLoading(true);
     try {
-      const svc = new OnchainScoreService();
-      const results = await Promise.all(normalized.map((a) => svc.compute(a)));
+      const results = await Promise.all(normalized.map((a) => fetchScore(a)));
       setRows(
         results.map((r) => ({
           address: r.address,
